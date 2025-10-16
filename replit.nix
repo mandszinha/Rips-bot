@@ -1,8 +1,8 @@
-{ pkgs }: 
+{ pkgs }:
 {
   deps = [
-    pkgs.python311Full
-    pkgs.nodejs
+    pkgs.python311Full    # Python 3.11
+    pkgs.nodejs           # Node.js necessário para Playwright
     pkgs.curl
     pkgs.gcc
     pkgs.glib
@@ -18,8 +18,9 @@
     pkgs.nspr
     pkgs.dbus
     pkgs.atk
-    pkgs.atkmm
     pkgs.atspi2
+    pkgs.cairo
+    pkgs.pango
   ];
 }
 
