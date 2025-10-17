@@ -25,7 +25,10 @@ async def check_if_in_olirips_followers(target_username: str, timeout_seconds: i
     print(f"[check] Abrindo perfil {profile_url} para procurar {target_username}")
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True, args=["--no-sandbox"])
+        browser = await p.chromium.launch(
+            headless=True,  # modo headless obrigatório no Replit
+            args=["--no-sandbox"]  # evita problemas de sandbox no Replit
+        )
         page = await browser.new_page()
         await page.set_extra_http_headers({"user-agent": USER_AGENT})
         await page.set_viewport_size({"width": 1280, "height": 800})
@@ -40,14 +43,12 @@ async def check_if_in_olirips_followers(target_username: str, timeout_seconds: i
                 return "private"
 
             # Scroll infinito para tentar achar o username
-            elapsed = 0
             while (time.time() - start_time) < timeout_seconds:
                 html = await page.content()
                 if target_username in html.lower():
                     return True
                 await page.evaluate("() => { window.scrollBy(0, window.innerHeight); }")
                 await page.wait_for_timeout(800)
-                elapsed += 1
 
             return False
 
