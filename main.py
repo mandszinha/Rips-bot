@@ -1,14 +1,34 @@
+import discord
+from discord.ext import commands
+import asyncio
+from config import TOKEN, TIKTOK_USER, ROLE_NAME
+
+# --- Intents do Discord ---
+intents = discord.Intents.default()
+intents.members = True
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+# --- Evento ready ---
+@bot.event
+async def on_ready():
+    print(f"Bot conectado como {bot.user}")
+
+
+# --- Comando !verificar ---
 @bot.command()
 async def verificar(ctx):
     """Pergunta o TikTok do usuário e atribui cargo se segue @olirips"""
-    
-    # Evita enviar mensagem duplicada
+
+    # Pergunta apenas uma vez
     try:
         await ctx.send("📱 Qual é o seu @ no TikTok? (ex: usuario123)")
     except Exception as e:
         print(f"[verificar] Não consegui enviar pergunta: {e}")
         return
 
+    # Espera a resposta do usuário
     try:
         msg = await bot.wait_for(
             "message",
@@ -44,3 +64,7 @@ async def verificar(ctx):
     except Exception as e:
         print(f"[verificar] Erro TikTok-API: {e}")
         await waiting_msg.edit(content="❌ Ocorreu um erro ao verificar o TikTok. Tente novamente mais tarde.")
+
+
+# --- Rodar bot ---
+bot.run(TOKEN)
